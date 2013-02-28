@@ -182,8 +182,14 @@ public class ConnectServlet extends JsonRestServlet {
     if (tokenInfo.containsKey("error")) {
       throw new TokenVerificationException(tokenInfo.get("error").toString());
     }
+    
+
+    String[] serverId = CLIENT_ID.split("-");
+    String[] tokenId = tokenInfo.getIssuedTo().split("-");
+
     // Make sure the token we got is for our app.
-    if (!tokenInfo.getIssuedTo().equals(CLIENT_ID)) {
+    if (serverId.length <= 0 || tokenId.length <= 0 
+    		|| !serverId[0].equals(tokenId[0])) {
       throw new TokenVerificationException(
           "Token's client ID does not match app's.");
     }
