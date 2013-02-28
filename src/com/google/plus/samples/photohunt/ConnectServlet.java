@@ -20,6 +20,8 @@ import static com.google.plus.samples.photohunt.model.OfyService.ofy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,16 +107,26 @@ public class ConnectServlet extends JsonRestServlet {
     } catch (IOException e) {
       sendError(resp, 400, "Unable to read auth result from request body");
     }
+    
     // Create a credential object.
     GoogleCredential credential = new GoogleCredential.Builder()
         .setJsonFactory(JSON_FACTORY).setTransport(TRANSPORT)
         .setClientSecrets(CLIENT_ID, CLIENT_SECRET).build();
+    
     try {
       if (accessToken.code != null) {
         // exchange the code for a token (Web Frontend)
         GoogleTokenResponse tokenFromExchange = exchangeCode(accessToken);
         credential.setFromTokenResponse(tokenFromExchange);
       } else {
+    	if (accessToken.access_token == null) {
+          sendError(resp, 400, "Missing access token in request.");
+    	}
+    	
+    	if (accessToken.expires_in == null) {
+    		getTokenInfo(accessToken);
+    	}
+    	
         // use the token received from the client
         credential.setAccessToken(accessToken.access_token)
             .setRefreshToken(accessToken.refresh_token)
@@ -183,13 +195,14 @@ public class ConnectServlet extends JsonRestServlet {
       throw new TokenVerificationException(tokenInfo.get("error").toString());
     }
     
-
-    String[] serverId = CLIENT_ID.split("-");
-    String[] tokenId = tokenInfo.getIssuedTo().split("-");
+    Pattern p = Pattern.compile("^(\\d*)(.*).apps.googleusercontent.com$");
+	Matcher issuedTo = p.matcher(CLIENT_ID);
+	Matcher localId = p.matcher(tokenInfo.getIssuedTo());
 
     // Make sure the token we got is for our app.
-    if (serverId.length <= 0 || tokenId.length <= 0 
-    		|| !serverId[0].equals(tokenId[0])) {
+    if (!issuedTo.matches() || !localId.matches() 
+    		|| !issuedTo.group(1).equals(localId.group(1))) {
+
       throw new TokenVerificationException(
           "Token's client ID does not match app's.");
     }

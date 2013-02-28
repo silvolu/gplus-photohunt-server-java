@@ -240,6 +240,7 @@ public class PhotosServlet extends JsonRestServlet {
    * }
    *
    * Issues the following errors along with corresponding HTTP response codes:
+   * 400: "Bad Request" if the request is missing image data.
    * 401: "Unauthorized request" (if certain parameters are present in the
    *      request)
    * 401: "Access token expired" (there is a logged in user, but he doesn't
@@ -255,11 +256,17 @@ public class PhotosServlet extends JsonRestServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
     try {
       checkAuthorization(req);
-      BlobKey imageKey = blobstoreService.getUploads(req).get("image")
-          .iterator().next();
-      if (imageKey == null) {
-        return;
+      List<BlobKey> blobKeys = blobstoreService.getUploads(req).get("image");
+      BlobKey imageKey = null;
+      
+      if (blobKeys != null) {
+    	  imageKey = blobKeys.iterator().next();
       }
+      
+      if (imageKey == null) {
+        sendError(resp, 400, "Missing image data.");
+      }
+      
       Long currentUserId = (Long) req.getSession().getAttribute(
           CURRENT_USER_SESSION_KEY);
       User author = ofy().load().type(User.class).id(currentUserId).get();
