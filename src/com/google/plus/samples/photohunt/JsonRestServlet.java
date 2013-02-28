@@ -98,6 +98,10 @@ public abstract class JsonRestServlet extends HttpServlet {
 	 */
 	protected void sendError(HttpServletResponse resp, int code, String message) {
 		try {
+			if (code == 401) {
+				resp.addHeader("WWW-Authenticate", "OAuth realm=\"PhotoHunt\", error=\"invalid-token\"");
+			}
+			
 			resp.sendError(code, message);
 		} catch (IOException e) {
 			throw new RuntimeException(message);
