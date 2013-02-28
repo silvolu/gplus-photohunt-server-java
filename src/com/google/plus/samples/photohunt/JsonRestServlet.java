@@ -223,27 +223,6 @@ public abstract class JsonRestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Retrieve the token data of the supplied token.
-	 * 
-	 * @param accessToken The token to request the data for.
-	 */
-	protected void getTokenInfo(TokenData accessToken) throws IOException {
-		try {
-			URL url = new URL(
-					"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token="
-							+ accessToken.access_token);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					url.openStream()));
-			TokenData tokenInfo = Jsonifiable.fromJson(reader, TokenData.class);
-			
-			accessToken.expires_in = tokenInfo.expires_in;
-			accessToken.expires_at = System.currentTimeMillis() + tokenInfo.expires_in * 1000;
-        } catch (MalformedURLException e) {
-			throw new RuntimeException("Bad tokeninfo URL", e);
-		} 
-	}
-
-	/**
 	 * @param req
 	 *            Request to query for session data.
 	 * @return Credential representing currently connected User.

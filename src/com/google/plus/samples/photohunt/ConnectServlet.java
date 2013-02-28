@@ -123,10 +123,6 @@ public class ConnectServlet extends JsonRestServlet {
           sendError(resp, 400, "Missing access token in request.");
     	}
     	
-    	if (accessToken.expires_in == null) {
-    		getTokenInfo(accessToken);
-    	}
-    	
         // use the token received from the client
         credential.setAccessToken(accessToken.access_token)
             .setRefreshToken(accessToken.refresh_token)
@@ -195,6 +191,13 @@ public class ConnectServlet extends JsonRestServlet {
       throw new TokenVerificationException(tokenInfo.get("error").toString());
     }
     
+    if (credential.getExpiresInSeconds() == null) {
+    	// Set the expiry time if it hasn't already been set.
+    	int expiresIn = tokenInfo.getExpiresIn();
+		credential.setExpiresInSeconds((long) expiresIn);
+		credential.setExpirationTimeMilliseconds(System.currentTimeMillis() + expiresIn * 1000);
+    }
+    
     Pattern p = Pattern.compile("^(\\d*)(.*).apps.googleusercontent.com$");
 	Matcher issuedTo = p.matcher(CLIENT_ID);
 	Matcher localId = p.matcher(tokenInfo.getIssuedTo());
@@ -206,6 +209,7 @@ public class ConnectServlet extends JsonRestServlet {
       throw new TokenVerificationException(
           "Token's client ID does not match app's.");
     }
+    
     return tokenInfo.getUserId();
   }
 
