@@ -36,6 +36,7 @@ import com.google.api.services.plus.model.Moment;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.plus.samples.photohunt.model.Message;
 import com.google.plus.samples.photohunt.model.Photo;
 import com.google.plus.samples.photohunt.model.Theme;
 import com.google.plus.samples.photohunt.model.User;
@@ -331,7 +332,7 @@ public class PhotosServlet extends JsonRestServlet {
       List<Vote> photoVotes = ofy().load().type(Vote.class)
           .filter("photoId", photoId).list();
       ofy().delete().entities(photoVotes);
-      sendResponse(req, resp, "Photo successfully deleted",
+      sendResponse(req, resp, new Message("Photo successfully deleted"),
           "photohunt#message");
     } catch (NotFoundException nfe) {
       sendError(resp, 404, doesNotExist);

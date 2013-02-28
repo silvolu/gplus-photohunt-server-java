@@ -20,6 +20,7 @@ import static com.google.plus.samples.photohunt.model.OfyService.ofy;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.plus.samples.photohunt.model.DirectedUserToUserEdge;
+import com.google.plus.samples.photohunt.model.Message;
 import com.google.plus.samples.photohunt.model.Photo;
 import com.google.plus.samples.photohunt.model.User;
 import com.google.plus.samples.photohunt.model.Vote;
@@ -86,7 +87,7 @@ public class DisconnectServlet extends JsonRestServlet {
       revokeToken(user.getGoogleAccessToken());
 
       req.getSession().removeAttribute(CURRENT_USER_SESSION_KEY);
-      sendResponse(req, resp, "Successfully disconnected.",
+      sendResponse(req, resp, new Message("Successfully disconnected."),
           "photohunt#message");
     } catch (UserNotAuthorizedException e) {
       sendError(resp, 401,

@@ -37,6 +37,8 @@ import lombok.Setter;
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
 public class Vote extends Jsonifiable {
+	
+  @Expose
   public static String kind = "photohunt#vote";
 
   /**

@@ -49,6 +49,8 @@ import java.util.List;
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
 public class User extends Jsonifiable {
+	
+  @Expose
   public static String kind = "photohunt#user";
 
   /**

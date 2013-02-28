@@ -141,7 +141,7 @@ public abstract class JsonRestServlet extends HttpServlet {
 							.append("body to HttpServletResponse.").toString());
 		}
 	}
-
+	
 	/**
 	 * Send the given object (via body.toString()) down the given response.
 	 * 
@@ -162,13 +162,8 @@ public abstract class JsonRestServlet extends HttpServlet {
 				jsonObject.put("kind", kind);
 				jsonObject.put("item", body);
 				resp.getWriter().print(Jsonifiable.GSON.toJson(jsonObject));
-			} else if (body instanceof String) {
-				Map<String, Object> jsonObject = new HashMap<String, Object>();
-				jsonObject.put("kind", kind);
-				jsonObject.put("message", body);
-				resp.getWriter().print(Jsonifiable.GSON.toJson(jsonObject));
 			} else {
-				resp.getWriter().print(Jsonifiable.GSON.toJson(body));
+				resp.getWriter().print(body.toString());
 			}
 		} catch (IOException e) {
 			sendError(

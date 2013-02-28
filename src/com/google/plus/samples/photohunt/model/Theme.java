@@ -42,6 +42,8 @@ import java.util.Date;
 @Cache
 @EqualsAndHashCode(of="id", callSuper=false)
 public class Theme extends Jsonifiable {
+
+  @Expose
   public static String kind = "photohunt#theme";
 
   /**
