@@ -18,6 +18,12 @@ package com.google.plus.samples.photohunt;
 
 import static com.google.plus.samples.photohunt.model.OfyService.ofy;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.Plus.Moments.Insert;
@@ -27,12 +33,6 @@ import com.google.plus.samples.photohunt.PhotosServlet.MomentWritingException;
 import com.google.plus.samples.photohunt.model.Photo;
 import com.google.plus.samples.photohunt.model.User;
 import com.google.plus.samples.photohunt.model.Vote;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Provides an API for working with Votes.  This servlet provides the
@@ -96,11 +96,11 @@ public class VotesServlet extends JsonRestServlet {
       vote.setOwnerUserId(currentUserId);
       List<Vote> voteExist = ofy().load().type(Vote.class)
           .filter("ownerUserId", currentUserId)
-          .filter("photoId", vote.getPhotoId())
-          .list();
+          .filter("photoId", vote.getPhotoId()).list();
       Photo photo = ofy().load().type(Photo.class).id(vote.getPhotoId()).get();
       photo.setVoted(true);
       if (voteExist.size() < 1) {
+        photo.setNumVotes(photo.getNumVotes() + 1);
         ofy().save().entity(vote).now();
         ofy().clear();
         addVoteToGooglePlusAppActivity(author, photo, credential);
@@ -126,22 +126,18 @@ public class VotesServlet extends JsonRestServlet {
    * @throws MomentWritingException Failed to write app activity to Google.
    */
   private void addVoteToGooglePlusAppActivity(User author, Photo photo,
-      GoogleCredential credential) throws MomentWritingException{
+      GoogleCredential credential) throws MomentWritingException {
     ItemScope target = new ItemScope().setUrl(photo.getPhotoContentUrl());
-    ItemScope result = new ItemScope()
-        .setType("http://schema.org/Review")
+    ItemScope result = new ItemScope().setType("http://schema.org/Review")
         .setName("A vote for a PhotoHunt photo")
-        .setUrl(photo.getPhotoContentUrl())
-        .setText("Voted!");
-    Moment content = new Moment().setType(
-            "http://schemas.google.com/ReviewActivity")
-            .setTarget(target)
-            .setResult(result);
-    Plus plus = new Plus.Builder(
-        TRANSPORT, JSON_FACTORY, credential).build();
+        .setUrl(photo.getPhotoContentUrl()).setText("Voted!");
+    Moment content = new Moment()
+        .setType("http://schemas.google.com/ReviewActivity").setTarget(target)
+        .setResult(result);
+    Plus plus = new Plus.Builder(TRANSPORT, JSON_FACTORY, credential).build();
     try {
-      Insert request = plus.moments().insert(author.googleUserId,
-          "vault", content);
+      Insert request = plus.moments().insert(author.googleUserId, "vault",
+          content);
       Moment moment = request.execute();
     } catch (IOException e) {
       throw new MomentWritingException(e.getMessage());
