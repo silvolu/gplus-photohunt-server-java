@@ -16,6 +16,11 @@
 
 package com.google.plus.samples.photohunt.model;
 
+/**
+ * Encapsulates messages returned by the API.
+ * 
+ * @author silvano@google.com (Silvano Luciani)
+ */
 public class Message {
 
   private final String content;
