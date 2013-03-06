@@ -45,8 +45,8 @@ public class FriendsServlet extends JsonRestServlet {
    * Takes no request payload, and identifies the incoming user by the user
    * data stored in their session.
    *
-   * Returns the following JSON response representing the User that was
-   * connected:
+   * Returns the following JSON response representing the people that are
+   * connected to the currently signed in user:
    * [
    *   {
    *     "id":0,
