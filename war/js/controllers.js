@@ -259,6 +259,7 @@ function PhotoHuntCtrl($scope, $location, Conf, PhotoHuntApi) {
         'calltoactionlabel': 'Join',
         'calltoactionurl': Conf.rootUrl,
         'calltoactiondeeplinkid': '/',
+        'callback': $scope.signIn,
         'requestvisibleactions': Conf.requestvisibleactions,
         'scope': Conf.scopes,
         'cookiepolicy': Conf.cookiepolicy
