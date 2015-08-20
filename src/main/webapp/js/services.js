@@ -23,7 +23,7 @@ angular.module('photoHunt.services', [])
         return rootUrl;
       };
       return {
-        'clientId': 'YOUR_CLIENT_ID',
+        'clientId': '993333333553-295ugv03ktbpmei121ggg78iebo1j38k.apps.googleusercontent.com',
         'apiBase': '/api/',
         'rootUrl': getRootUrl(),
         'scopes': 'https://www.googleapis.com/auth/plus.login ',

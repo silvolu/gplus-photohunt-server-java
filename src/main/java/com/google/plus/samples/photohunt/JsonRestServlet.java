@@ -47,12 +47,12 @@ public abstract class JsonRestServlet extends HttpServlet {
   /**
    * Replace this with the client ID you got from the Google APIs console.
    */
-  public static final String CLIENT_ID = "YOUR_CLIENT_ID";
+  public static final String CLIENT_ID = "993333333553-295ugv03ktbpmei121ggg78iebo1j38k.apps.googleusercontent.com";
 
   /**
    * Replace this with the client secret you got from the Google APIs console.
    */
-  public static final String CLIENT_SECRET = "YOUR_CLIENT_SECRET";
+  public static final String CLIENT_SECRET = "K3fzK5Y5qn-4_q04OSypdPjk";
 
   /**
    * MIME type to use when sending responses back to PhotoHunt clients.
