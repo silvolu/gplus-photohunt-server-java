@@ -1,0 +1,32 @@
+target/
+
+# NetBeans files
+nb-configuration.xml
+nbactions.xml
+
+# General
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.metadata
+.loadpath
+classes/
+
+# Eclipse Core
+.project
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# IntelliJ IDEA
+*.iml
+.idea/
